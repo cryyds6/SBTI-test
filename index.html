@@ -737,6 +737,14 @@
       height: 100px !important;
     }
 
+    .qr-code-image {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
     #downloadShareBtn {
       margin-top: 1rem;
       padding: 0.75rem 1.5rem;
@@ -856,7 +864,7 @@
                 <p>测试网站：<a href="https://sbti-test-3n1.pages.dev/" target="_blank">sbti-test-3n1.pages.dev</a></p>
                 <p class="share-tip">扫描下方二维码，立即开始测试 →</p>
                 <div class="qr-container">
-                  <canvas id="qrCodeCanvas" width="100" height="100"></canvas>
+                  <img id="qrCodeImage" class="qr-code-image" alt="扫码测试" />
                 </div>
               </div>
             </div>
@@ -1914,7 +1922,7 @@
       const shareModule = document.getElementById('shareModule');
       const shareTypeName = document.getElementById('shareTypeName');
       const sharePersonalityImg = document.getElementById('sharePersonalityImg');
-      const qrCodeCanvas = document.getElementById('qrCodeCanvas');
+      const qrCodeImage = document.getElementById('qrCodeImage');
       const downloadBtn = document.getElementById('downloadShareBtn');
 
       // 填充人格信息
@@ -1925,37 +1933,23 @@
         sharePersonalityImg.alt = `${type.code}（${type.cn}）`;
       }
 
-      // 生成二维码（等待库加载完成）
-      const generateQR = () => {
-        if (typeof QRCode !== 'undefined' && qrCodeCanvas) {
-          try {
-            new QRCode(qrCodeCanvas, {
-              text: 'https://sbti-test-3n1.pages.dev/',
-              width: 100,
-              height: 100,
-              colorDark: '#000000',
-              colorLight: '#ffffff',
-              correctLevel: QRCode.CorrectLevel.M
-            });
-          } catch (e) {
-            console.error('二维码生成失败:', e);
-            // QRCode库异常时，用备用方案（显示文字）
-            const ctx = qrCodeCanvas.getContext('2d');
-            ctx.fillStyle = '#f0f0f0';
-            ctx.fillRect(0, 0, 100, 100);
-            ctx.fillStyle = '#666';
-            ctx.font = '10px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('扫码测试', 50, 50);
-          }
-        } else {
-          // QRCode库未加载，延迟重试
-          setTimeout(generateQR, 500);
-        }
-      };
+      // 根据当前域名匹配二维码图片
+      const currentOrigin = window.location.origin;
+      let qrCodeSrc = 'image/qrcode-sbti-test-3n1.jpg'; // 默认测试站二维码
 
-      // 启动二维码生成
-      generateQR();
+      // 如果部署在其他域名，可以扩展匹配逻辑
+      if (currentOrigin.includes('sbti-test-3n1.pages.dev')) {
+        qrCodeSrc = 'image/qrcode-sbti-test-3n1.jpg';
+      } else if (currentOrigin.includes('pages.dev')) {
+        // 其他 CF Pages 部署，可以用默认的
+        qrCodeSrc = 'image/qrcode-sbti-test-3n1.jpg';
+      }
+      // 可以在这里添加更多域名的匹配规则
+
+      if (qrCodeImage) {
+        qrCodeImage.src = qrCodeSrc;
+        qrCodeImage.alt = '扫码开始测试';
+      }
 
       // 绑定下载按钮
       if (downloadBtn) {
