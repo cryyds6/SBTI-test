@@ -701,6 +701,20 @@
       display: block;
     }
 
+    .share-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0.75rem 0;
+      padding: 0 0.5rem;
+      max-height: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+    }
+
     .share-website {
       margin-top: 1rem;
       font-size: 0.7rem;
@@ -860,6 +874,7 @@
                 <div class="share-subtitle">我的 SBTI 人格测试结果</div>
               </div>
               <img id="sharePersonalityImg" class="share-personality-img" alt="人格图片" />
+              <div id="shareDesc" class="share-desc"></div>
               <div class="share-website">
                 <p>测试网站：<a href="https://sbti-test-3n1.pages.dev/" target="_blank">sbti-test-3n1.pages.dev</a></p>
                 <p class="share-tip">扫描下方二维码，立即开始测试 →</p>
@@ -1931,6 +1946,12 @@
       if (imageSrc) {
         sharePersonalityImg.src = imageSrc;
         sharePersonalityImg.alt = `${type.code}（${type.cn}）`;
+      }
+
+      // 填充人格解读
+      const shareDesc = document.getElementById('shareDesc');
+      if (shareDesc && type.desc) {
+        shareDesc.textContent = type.desc;
       }
 
       // 根据当前域名匹配二维码图片
