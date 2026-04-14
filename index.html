@@ -1617,6 +1617,7 @@
             }
             if (app.isSingleQuestionMode) {
               renderCurrentQuestion();
+              nextQuestion();  // 单题模式下也跳下一题
             } else {
               renderQuestions();
             }
